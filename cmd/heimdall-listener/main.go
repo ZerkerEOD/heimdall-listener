@@ -1,7 +1,7 @@
 package main
 
 import (
-	"broadcast-checker/pkg/listener"
+	"heimdall-listener/pkg/listener"
 	"image/color"
 	"log"
 	"strings"
@@ -75,7 +75,7 @@ type CaptureInfo struct {
 func main() {
 	myApp := app.New()
 	myApp.Settings().SetTheme(&myDarkTheme{})
-	myWindow := myApp.NewWindow("Broadcast Checker")
+	myWindow := myApp.NewWindow("Heimdall Listener")
 
 	// Initialize listener
 	listener.Init()

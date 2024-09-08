@@ -1,4 +1,4 @@
-module broadcast-checker
+module github.com/ZerkerEOD/heimdall-listener
 
 go 1.23.0
 
