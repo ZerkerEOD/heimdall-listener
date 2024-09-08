@@ -1,7 +1,7 @@
 package main
 
 import (
-	"heimdall-listener/pkg/listener"
+	"github.com/ZerkerEOD/heimdall-listener/pkg/listener"
 	"image/color"
 	"log"
 	"strings"
