@@ -17,3 +17,9 @@ go.work.sum
 
 # env file
 .env
+
+# Build Script
+build.sh
+
+# Build output
+build/
