@@ -48,5 +48,5 @@ As this project is a side project, it was created for fun to help organizations.
   ![Donate with PayPal]
   (https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)
 ]
-(https://paypal.me/ZerkerEOD/)]
+(https://paypal.me/ZerkerEOD/)
 ```
