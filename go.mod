@@ -4,6 +4,7 @@ go 1.23.0
 
 require (
 	fyne.io/fyne/v2 v2.5.1
+	github.com/ZerkerEOD/heimdall-listener v0.0.0-20241020132014-af11680aa38c
 	github.com/google/gopacket v1.1.19
 )
 
