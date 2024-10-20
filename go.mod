@@ -1,4 +1,4 @@
-module github.com/ZerkerEOD/heimdall-listener
+module github.com/ZerkerEOD/heimdall-listener/cmd/listener
 
 go 1.23.0
 
