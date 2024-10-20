@@ -39,5 +39,5 @@ As this is a side project of mine and will work on bugs or feature requests as I
 
 # Donations
 As this project is a side project, it was created for fun to help organizations. If this helped you were able to disable to better secure your organization and look like a hero by helping prevent maybe a Pentest or Red Team from gaining access, then I wouldn't say no to a coffee or donation.
-![Donate with PayPal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png ](https://paypal.me/ZerkerEOD/5)
+[![Donate with PayPal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png ](https://paypal.me/ZerkerEOD/5)]
 
