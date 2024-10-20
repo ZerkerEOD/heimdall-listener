@@ -26,6 +26,7 @@ Next you will see a drop down in the upper left that allows you to select which 
 Once you have selected the proper interface you can select the 'Start Listening' button and let it sit. As broadcast traffic will only be identified as it is broadcast out I recommend letting it run for a while to see what appears.
 
 I built in a filter feature to only show certain protocols if you are wanting to look for any specific items while remediating. You can use the drop down to the right to select what protocols to show (the program is still listening for all just filtering the view for the specific one). The filter bar can be used while actively listening and after a listen.
+
 ![[img/sorting-options.png]]
 In order to refresh the output you will need to close the application and restart it. I have not built in a renew/refresh option and can do so if enough people think they would use it.
 
@@ -39,5 +40,6 @@ As this is a side project of mine and will work on bugs or feature requests as I
 
 # Donations
 As this project is a side project, it was created for fun to help organizations. If this helped you were able to disable to better secure your organization and look like a hero by helping prevent maybe a Pentest or Red Team from gaining access, then I wouldn't say no to a coffee or donation.
+
 [![Donate with PayPal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png ](https://paypal.me/ZerkerEOD/5)]
 
