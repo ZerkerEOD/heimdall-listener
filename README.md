@@ -9,6 +9,8 @@ Heimdall Listener is a project that I wanted to create to help system administra
 # Installation
 The best method of installation is by using Go native installation but this requires that Go has been installed on your host and the Path setup using their instructions https://go.dev/doc/install.
 
+On Linux you need to install libpcap-dev `apt install libpcap-dev` which is a requirement of the pcap package in use.
+
 You can install on Windows, Mac or Linux by using the following command:
 ```shell
 go install github.com/ZerkerEOD/heimdall-listener/cmd/heimdall-listener@latest
