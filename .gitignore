@@ -1,15 +1,38 @@
-# Binaries for programs and plugins
+# Build outputs
+build/
+fyne-cross/
+heimdall-listener
+heimdall-listener.tar.xz
+
+# Fyne specific
+*.syso
+fyne-cross.yml
+Icon.png
+
+# Go specific
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, built with `go test -c`
 *.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# IDE specific (common ones)
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Go workspace file
 go.work
@@ -20,6 +43,3 @@ go.work.sum
 
 # Build Script
 build.sh
-
-# Build output
-build/

@@ -7,6 +7,13 @@ Heimdall Listener is a project that I wanted to create to help system administra
 ![](img/opening-prog.png)
 
 # Installation
+
+**Dependencies**:
+- **Windows**: Requires wpcap.dll (part of Npcap/WinPcap). Due to licensing restrictions, I can not currenlty add wpcap.dll to the executable. It can be obtained by:
+  - Installing [Npcap](https://npcap.com/#download) (recommended)
+  - Installing [Wireshark](https://www.wireshark.org/download.html) (includes Npcap)
+- **Linux**: Requires libpcap-dev when compiling from source
+
 The best method of installation is by using Go native installation but this requires that Go has been installed on your host and the Path setup using their instructions https://go.dev/doc/install.
 
 On Linux you need to install libpcap-dev `apt install libpcap-dev` which is a requirement of the pcap package in use.

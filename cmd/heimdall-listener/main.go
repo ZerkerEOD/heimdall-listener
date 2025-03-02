@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/ZerkerEOD/heimdall-listener/pkg/listener"
 	"image/color"
 	"log"
+	"runtime"
 	"strings"
+
+	"github.com/ZerkerEOD/heimdall-listener/pkg/listener"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -69,6 +71,18 @@ type CaptureInfo struct {
 	Protocol string
 	Hostname string
 	IsWPAD   bool
+}
+
+// getFriendlyInterfaceName returns a more human-readable name for network interfaces
+// especially useful for Windows where interface names are like /Device/NPF_{GUID}
+func getFriendlyInterfaceName(iface pcap.Interface) string {
+	// On Windows, use the description if available
+	if runtime.GOOS == "windows" && iface.Description != "" {
+		return iface.Description
+	}
+
+	// On Linux and other platforms, use the name as is
+	return iface.Name
 }
 
 // Modify the main function and add these new functions
@@ -139,17 +153,25 @@ func main() {
 	})
 	protocolSelector.SetSelected("All")
 
-	// Create interface dropdown
+	// Create interface dropdown with friendly names
 	var selectedInterface string
 	interfaceNames := make([]string, len(interfaces))
+	interfaceMap := make(map[string]string) // Maps friendly name to actual interface name
+
 	for i, iface := range interfaces {
-		interfaceNames[i] = iface.Name
+		friendlyName := getFriendlyInterfaceName(iface)
+		interfaceNames[i] = friendlyName
+		interfaceMap[friendlyName] = iface.Name
 	}
+
 	interfaceSelect := widget.NewSelect(interfaceNames, func(value string) {
-		selectedInterface = value
+		// Map the friendly name back to the actual interface name
+		selectedInterface = interfaceMap[value]
 	})
+
 	if len(interfaceNames) > 0 {
 		interfaceSelect.SetSelected(interfaceNames[0])
+		selectedInterface = interfaceMap[interfaceNames[0]]
 	}
 
 	// Create the listen button
