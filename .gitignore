@@ -1,13 +1,13 @@
 # Build outputs
 build/
 fyne-cross/
-heimdall-listener
+/heimdall-listener
+/heimdall-cli
 heimdall-listener.tar.xz
 
 # Fyne specific
 *.syso
 fyne-cross.yml
-Icon.png
 
 # Go specific
 *.exe
@@ -41,5 +41,7 @@ go.work.sum
 # env file
 .env
 
-# Build Script
-build.sh
+
+# Editor vaults / local dist
+.obsidian/
+dist/

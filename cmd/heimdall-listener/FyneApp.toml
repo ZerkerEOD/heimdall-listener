@@ -1,0 +1,8 @@
+Website = "https://github.com/ZerkerEOD/heimdall-listener"
+
+[Details]
+Icon = "Icon.png"
+Name = "Heimdall Listener"
+ID = "com.heimdall.listener"
+Version = "2.0.0"
+Build = 1

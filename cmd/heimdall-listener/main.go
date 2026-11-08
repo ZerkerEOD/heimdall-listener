@@ -14,13 +14,13 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/google/gopacket/pcap"
+	"github.com/gopacket/gopacket/pcap"
 )
 
 type myDarkTheme struct{}
 
 func (m myDarkTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
-	return theme.DefaultTheme().Color(name, theme.VariantDark)
+	return theme.DefaultTheme().Color(name, variant)
 }
 
 func (m myDarkTheme) Icon(name fyne.ThemeIconName) fyne.Resource {
@@ -202,8 +202,10 @@ func main() {
 	// Start a goroutine to update the table
 	go func() {
 		for newData := range listener.DataChannel {
-			addCapture(&captures, newData.SourceIP, newData.Protocol, newData.RequestedHostname)
-			updateTable(captures, protocolSelector.Selected, table)
+			fyne.Do(func() {
+				addCapture(&captures, newData.SourceIP, newData.Protocol, newData.RequestedHostname)
+				updateTable(captures, protocolSelector.Selected, table)
+			})
 		}
 	}()
 
