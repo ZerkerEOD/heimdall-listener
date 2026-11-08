@@ -1,0 +1,6 @@
+source_ip,source_mac,protocol,kind,name,wpad,query_types,answers,count,first_seen,last_seen
+10.0.0.5,00:11:22:33:44:55,HTTP,Query,wpad/wpad.dat,true,GET,10.0.0.66,15,2026-11-09T10:00:00Z,2026-11-09T10:29:00Z
+10.0.0.5,00:11:22:33:44:55,NetBIOS,Query,wpad<00>,true,NB,,15,2026-11-09T10:00:00Z,2026-11-09T10:29:00Z
+10.0.0.9,,LLMNR,Query,nas,false,A,,2,2026-11-09T10:00:00Z,2026-11-09T10:00:00Z
+10.0.0.20,,mDNS,Query,_ipp._tcp.local,false,PTR,,4,2026-11-09T10:00:00Z,2026-11-09T10:00:00Z
+10.0.0.66,,NetBIOS,Response,wpad<00>,true,NB,10.0.0.66,15,2026-11-09T10:00:00Z,2026-11-09T10:29:00Z

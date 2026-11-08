@@ -1,0 +1,5 @@
+source_ip,source_mac,protocols,wpad,alerts,names,count,first_seen,last_seen
+10.0.0.66,,,true,high:llmnr-nbns-responder high:wpad-http-server,wpad<00>,15,2026-11-09T10:00:00Z,2026-11-09T10:29:00Z
+10.0.0.5,00:11:22:33:44:55,NetBIOS HTTP,true,,wpad/wpad.dat wpad<00>,30,2026-11-09T10:00:00Z,2026-11-09T10:29:00Z
+10.0.0.9,,LLMNR,false,,nas,2,2026-11-09T10:00:00Z,2026-11-09T10:00:00Z
+10.0.0.20,,mDNS,false,,_ipp._tcp.local,4,2026-11-09T10:00:00Z,2026-11-09T10:00:00Z

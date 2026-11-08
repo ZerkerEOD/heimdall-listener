@@ -1,0 +1,8 @@
+status,source_ip,protocol,kind,wpad,host_new,host_resolved,names_new,names_resolved,names_unchanged,baseline_count,current_count
+new,10.0.0.5,HTTP,Query,true,false,false,wpad/wpad.dat,,,0,15
+resolved,10.0.0.5,LLMNR,Query,true,false,false,,oldfileserver wpad,,43,0
+unchanged,10.0.0.5,NetBIOS,Query,true,false,false,,,wpad<00>,12,15
+new,10.0.0.9,LLMNR,Query,false,true,false,nas,,,0,2
+unchanged,10.0.0.20,mDNS,Query,false,false,false,,,_ipp._tcp.local,5,4
+new,10.0.0.66,NetBIOS,Response,true,true,false,wpad<00>,,,0,15
+resolved,fe80::1,DHCPv6,Query,false,false,true,,desktop-7.corp.local,,1,0

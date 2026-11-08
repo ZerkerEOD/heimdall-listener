@@ -1,0 +1,30 @@
+Baseline: baseline.json  (2026-11-08T10:00:00Z, 5 entries, 3 hosts)
+Current:  current.json  (2026-11-09T10:00:00Z, 5 entries, 4 hosts)
+
+New: 3 pair(s), 2 host(s), 2 WPAD    Resolved: 2 pair(s), 1 host(s), 1 WPAD    Unchanged: 2 pair(s)
+Alerts: 2 new, 0 cleared
+
+NEW (appeared since baseline)
+-----------------------------
+SOURCE IP  PROTOCOL  KIND      BASE  NOW  NAMES
+10.0.0.5   HTTP      Query     0     15   wpad/wpad.dat
+10.0.0.9   LLMNR     Query     0     2    nas (new host)
+10.0.0.66  NetBIOS   Response  0     15   wpad<00> (new host)
+
+RESOLVED (present in baseline, gone now)
+----------------------------------------
+SOURCE IP  PROTOCOL  KIND   BASE  NOW  NAMES
+10.0.0.5   LLMNR     Query  43    0    oldfileserver, wpad
+fe80::1    DHCPv6    Query  1     0    desktop-7.corp.local (host gone)
+
+UNCHANGED (+name added, -name gone)
+-----------------------------------
+SOURCE IP  PROTOCOL  KIND   BASE  NOW  NAMES
+10.0.0.5   NetBIOS   Query  12    15   wpad<00>
+10.0.0.20  mDNS      Query  5     4    _ipp._tcp.local
+
+ALERTS
+------
+STATUS  SEVERITY  SOURCE IP  RULE                  TITLE
+new     high      10.0.0.66  llmnr-nbns-responder  Answered a WPAD name lookup
+new     high      10.0.0.66  wpad-http-server      Serves wpad.dat and answers name lookups
