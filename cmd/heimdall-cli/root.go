@@ -28,7 +28,7 @@ Typical workflow:
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
-	root.AddCommand(newInterfacesCmd(), newCaptureCmd(), newDiffCmd(), newExportCmd(), newVersionCmd())
+	root.AddCommand(newInterfacesCmd(), newCaptureCmd(), newDiffCmd(), newExportCmd(), newServiceCmd(), newVersionCmd())
 	return root
 }
 
