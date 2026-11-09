@@ -477,7 +477,11 @@ func (a *App) clearResults() {
 }
 
 func (a *App) toolInfo() run.ToolInfo {
-	return run.ToolInfo{Name: "heimdall-listener", Version: version.Short(), Commit: version.Commit}
+	v := version.Short()
+	if v == "dev" && a.fy.Metadata().Version != "" {
+		v = a.fy.Metadata().Version // set by `fyne package` from FyneApp.toml
+	}
+	return run.ToolInfo{Name: "heimdall-listener", Version: v, Commit: version.Commit}
 }
 
 // currentRun exports the current state; all=false honours the table filter.
@@ -598,7 +602,7 @@ func (a *App) loadRun(r *run.Run, name string) {
 }
 
 func (a *App) showAbout() {
-	msg := version.String() + "\nCapture backend: " + capture.Backend() + "\n\n" +
+	msg := version.String() + "\nBuild: " + a.toolInfo().Version + "\nCapture backend: " + capture.Backend() + "\n\n" +
 		"Heimdall Listener passively identifies hosts using legacy name resolution (LLMNR, NetBIOS, mDNS), WPAD and DHCPv6, " +
 		"the traffic abused by Responder, Inveigh, mitm6 and ntlmrelayx. It never transmits packets.\n\n" +
 		"Tip: save a run before remediation, capture again afterwards, and use Compare to prove the change worked."
