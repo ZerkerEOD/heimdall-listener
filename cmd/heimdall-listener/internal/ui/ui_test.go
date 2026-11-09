@@ -9,7 +9,6 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver/software"
 	"fyne.io/fyne/v2/test"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/ZerkerEOD/heimdall-listener/pkg/run"
@@ -89,7 +88,7 @@ func TestRenderViews(t *testing.T) {
 	a.table.Select(widget.TableCellID{Row: 0, Col: 0})
 	a.table.OnSelected(widget.TableCellID{Row: 0, Col: 0})
 	save := func(name string) {
-		img := software.RenderCanvas(a.win.Canvas(), theme.DefaultTheme())
+		img := software.RenderCanvas(a.win.Canvas(), heimdallTheme{})
 		if img.Bounds().Dx() == 0 {
 			t.Fatalf("%s rendered empty", name)
 		}

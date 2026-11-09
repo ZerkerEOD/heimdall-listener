@@ -97,6 +97,7 @@ func Run(args []string) {
 // the interface with a test app.
 func newApp(fy fyne.App) *App {
 	a := &App{fy: fy, m: newModel(), agg: session.NewAggregator(session.Options{})}
+	fy.Settings().SetTheme(heimdallTheme{})
 	a.win = fy.NewWindow("Heimdall Listener")
 	a.win.SetMaster()
 
