@@ -45,3 +45,8 @@ go.work.sum
 # Editor vaults / local dist
 .obsidian/
 dist/
+
+# Local capture results (run files live anywhere but the repo root)
+/*.json
+/*.csv
+/*.txt
