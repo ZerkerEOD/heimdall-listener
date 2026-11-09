@@ -76,6 +76,13 @@ sudo setcap cap_net_raw,cap_net_admin+eip /usr/local/bin/heimdall-cli
 
 Viewing a saved run in the GUI needs no privileges at all (`heimdall-listener run.json`).
 
+## Documentation
+
+- [GUI tour](docs/GUI.md): every toolbar icon, control, tab and column explained.
+- [CLI reference](docs/CLI.md): all commands, flags, output formats and exit codes.
+- `heimdall-cli <command> --help` prints the same information on the command line, and
+  `heimdall-cli completion bash|zsh|fish|powershell` generates shell completion.
+
 ## Using the GUI
 
 1. Pick the interface in the top-left selector and press **▶**. Let it run for a while: hosts only show
@@ -120,6 +127,8 @@ Alerts show up in a red block at the top of the live view as soon as they are ra
 stderr after the capture ends (even with `--quiet`). `capture` exits with status 3 when a HIGH alert was
 raised, 2 when capture privileges are missing, so scripts can react. Use `--no-color` (or `NO_COLOR`) for
 plain output.
+
+Full flag tables, output formats and exit codes are in [docs/CLI.md](docs/CLI.md).
 
 `capture` accepts `-i` more than once to listen on several interfaces at the same time. On Windows the
 interface can be given by its friendly name (`-i "Ethernet 2"`). When stdout is not a terminal the live table
