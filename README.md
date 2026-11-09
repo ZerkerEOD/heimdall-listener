@@ -53,7 +53,7 @@ Download the binaries from the [releases page](https://github.com/ZerkerEOD/heim
 | File | Notes |
 |---|---|
 | `heimdall-listener-windows-amd64.exe` | GUI. Requires [Npcap](https://npcap.com) (also installed by Wireshark). Run as Administrator. |
-| `heimdall-listener-linux-amd64` | GUI. Requires `libpcap` (`apt install libpcap0.8` or equivalent). Run with `sudo`. |
+| `heimdall-listener-linux-amd64` | GUI. Requires `libpcap` (`apt install libpcap0.8` or equivalent). Grant it capture rights with `setcap` (below) and run it as your normal user; do **not** `sudo` a desktop app, it loses access to your display. |
 | `heimdall-cli-linux-amd64`, `heimdall-cli-linux-arm64` | Headless. **Static binary, nothing to install.** Run with `sudo` or grant it `CAP_NET_RAW`. |
 | `heimdall-cli-windows-amd64.exe` | Headless. Requires Npcap. Run from an elevated prompt. |
 | `SHA256SUMS` | Checksums for all of the above. |
@@ -65,11 +65,16 @@ go install github.com/ZerkerEOD/heimdall-listener/cmd/heimdall-cli@latest       
 go install github.com/ZerkerEOD/heimdall-listener/cmd/heimdall-listener@latest  # GUI, needs libpcap-dev and cgo
 ```
 
-Capturing needs elevated privileges on every platform. On Linux you can avoid `sudo` for everyday use:
+Capturing needs elevated privileges on every platform. On Linux grant them to the binaries once instead of
+using `sudo` (required for the GUI, since a desktop app started with `sudo` cannot reach your Wayland/X
+session; convenient for the CLI). Repeat after replacing a binary:
 
 ```sh
+sudo setcap cap_net_raw,cap_net_admin+eip /usr/local/bin/heimdall-listener
 sudo setcap cap_net_raw,cap_net_admin+eip /usr/local/bin/heimdall-cli
 ```
+
+Viewing a saved run in the GUI needs no privileges at all (`heimdall-listener run.json`).
 
 ## Using the GUI
 
