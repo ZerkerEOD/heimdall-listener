@@ -189,7 +189,11 @@ func WriteSummaryText(w io.Writer, r *run.Run) error {
 		if h.SourceMAC != "" {
 			bw.printf(" (%s)", h.SourceMAC)
 		}
-		bw.printf("  %d request(s), %s to %s\n", h.Count, fmtTime(h.FirstSeen), fmtTime(h.LastSeen))
+		if h.Count == 0 {
+			bw.printf("  no requests seen (alert only), %s to %s\n", fmtTime(h.FirstSeen), fmtTime(h.LastSeen))
+		} else {
+			bw.printf("  %d request(s), %s to %s\n", h.Count, fmtTime(h.FirstSeen), fmtTime(h.LastSeen))
+		}
 		if len(h.Alerts) > 0 {
 			for _, a := range h.Alerts {
 				bw.printf("    ALERT [%s] %s\n", strings.ToUpper(string(a.Severity)), a.Title)

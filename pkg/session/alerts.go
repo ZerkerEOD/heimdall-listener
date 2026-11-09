@@ -95,11 +95,15 @@ func (s *alertState) raise(rule string, ip netip.Addr, proto decode.Protocol, se
 	if ts.Before(a.FirstSeen) || a.FirstSeen.IsZero() {
 		a.FirstSeen = ts
 	}
-	if sev.Rank() < a.Severity.Rank() {
+	escalated := sev.Rank() < a.Severity.Rank()
+	if escalated {
 		a.Severity = sev
 	}
-	a.Title = title
-	a.Evidence = evidence
+	// Keep a WPAD-specific headline unless a later rule actually escalates.
+	if escalated || !ok || !strings.Contains(a.Title, "WPAD") {
+		a.Title = title
+		a.Evidence = evidence
+	}
 	if name != "" && !slices.Contains(a.Names, name) && len(a.Names) < maxAlertNamesStored {
 		a.Names = append(a.Names, name)
 		sort.Strings(a.Names)

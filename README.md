@@ -159,6 +159,18 @@ The service starts automatically, depends on the Npcap driver, logs start/stop e
 Log and to `heimdall.log` in the output directory, and restarts on failure.
 `heimdall-cli service uninstall` removes the registration; snapshots are kept.
 
+## Self-test
+
+`scripts/gen-test-traffic.py` is a small test harness (not part of the listener) that transmits the
+lookups the tool is meant to catch, so you can verify a sensor on your own segment in a minute:
+
+```sh
+heimdall-cli capture -i eth0 -d 30s -o test.json &          # in one terminal
+python3 scripts/gen-test-traffic.py eth0 full                # in another; then wait for the capture
+heimdall-cli export test.json                                # LLMNR, NetBIOS, mDNS and DHCPv6 rows from this host
+python3 scripts/gen-test-traffic.py eth0 responder           # during a second capture: raises llmnr-nbns-responder
+```
+
 ## Cloud and virtual networks
 
 Azure VNets and AWS VPCs do **not** forward broadcast or multicast traffic. A sensor on a cloud VM therefore
