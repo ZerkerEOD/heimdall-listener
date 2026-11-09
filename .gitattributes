@@ -1,0 +1,2 @@
+# Golden test fixtures and run files must keep LF endings on every platform
+*.golden -text

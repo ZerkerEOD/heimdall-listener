@@ -16,7 +16,7 @@ jobs:
       - name: Install system dependencies (libpcap for the GUI/cgo tests, GL/X11 for Fyne)
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev
+          sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev
       - run: go vet ./...
       - run: go test -race ./...
       - name: Build GUI (cgo)

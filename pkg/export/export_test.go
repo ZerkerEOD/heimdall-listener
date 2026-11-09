@@ -65,6 +65,8 @@ func golden(t *testing.T, name string, got []byte) {
 	if err != nil {
 		t.Fatalf("missing golden %s (run with -update): %v", path, err)
 	}
+	// Git may check goldens out with CRLF on Windows; compare line endings-agnostically.
+	want = bytes.ReplaceAll(want, []byte("\r\n"), []byte("\n"))
 	if !bytes.Equal(want, got) {
 		t.Errorf("%s differs from golden\n--- got ---\n%s", name, got)
 	}

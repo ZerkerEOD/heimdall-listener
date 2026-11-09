@@ -4,8 +4,10 @@ package capture
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/netip"
+	"strings"
 	"sync"
 	"sync/atomic"
 
@@ -26,8 +28,35 @@ type pcapHandle struct {
 	closeOnce   sync.Once
 }
 
+// ErrNoNpcap is returned on Windows when wpcap.dll cannot be loaded.
+var ErrNoNpcap = errors.New("capture: Npcap is not installed (wpcap.dll not found); install it from https://npcap.com")
+
+// guard converts the panic the pcap package raises when the capture
+// library cannot be loaded (wpcap.dll on Windows) into an error.
+func guard(fn func() error) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			if s, ok := r.(string); ok && strings.Contains(strings.ToLower(s), "wpcap") {
+				err = ErrNoNpcap
+				return
+			}
+			err = fmt.Errorf("capture: %v", r)
+		}
+	}()
+	return fn()
+}
+
 // Open opens name with libpcap/Npcap.
-func Open(name string, o Options) (Handle, error) {
+func Open(name string, o Options) (h Handle, err error) {
+	err = guard(func() error {
+		var e error
+		h, e = openPcap(name, o)
+		return e
+	})
+	return h, err
+}
+
+func openPcap(name string, o Options) (Handle, error) {
 	o = o.withDefaults()
 	ih, err := pcap.NewInactiveHandle(name)
 	if err != nil {
@@ -98,7 +127,16 @@ func (p *pcapHandle) Stats() (uint64, uint64, error) {
 
 // Interfaces enumerates devices with libpcap, which on Windows is the only
 // way to obtain the \Device\NPF_{GUID} names Npcap expects.
-func Interfaces() ([]Interface, error) {
+func Interfaces() (out []Interface, err error) {
+	err = guard(func() error {
+		var e error
+		out, e = pcapInterfaces()
+		return e
+	})
+	return out, err
+}
+
+func pcapInterfaces() ([]Interface, error) {
 	devs, err := pcap.FindAllDevs()
 	if err != nil {
 		return nil, wrapOpenError("(enumerate)", err)
@@ -121,4 +159,11 @@ func Interfaces() ([]Interface, error) {
 }
 
 // Backend reports the compiled-in capture backend.
-func Backend() string { return "libpcap (" + pcap.Version() + ")" }
+func Backend() string {
+	v := "not loaded"
+	_ = guard(func() error {
+		v = pcap.Version()
+		return nil
+	})
+	return "libpcap (" + v + ")"
+}

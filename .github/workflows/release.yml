@@ -20,7 +20,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev gcc-mingw-w64-x86-64
+          sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev gcc-mingw-w64-x86-64
           go install fyne.io/tools/cmd/fyne@latest
       - run: go test ./...
       - name: Build all artifacts
