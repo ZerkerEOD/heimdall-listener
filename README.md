@@ -58,6 +58,9 @@ Download the binaries from the [releases page](https://github.com/ZerkerEOD/heim
 | `heimdall-cli-windows-amd64.exe` | Headless. Requires Npcap. Run from an elevated prompt. |
 | `SHA256SUMS` | Checksums for all of the above. |
 
+No prebuilt macOS binaries are provided. Both programs build and run on macOS with the `go install` commands
+below (libpcap ships with the OS); run them with `sudo`, or install Wireshark's ChmodBPF to capture as your user.
+
 Or build from source with Go 1.25+ (`libpcap-dev` is needed only for the GUI):
 
 ```sh
