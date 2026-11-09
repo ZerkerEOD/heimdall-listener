@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ZerkerEOD/heimdall-listener/pkg/decode"
+	"github.com/ZerkerEOD/heimdall-listener/pkg/run"
 	"github.com/ZerkerEOD/heimdall-listener/pkg/session"
 )
 
@@ -20,6 +21,7 @@ type liveView struct {
 	ifaces     []string
 	backend    string
 	maxRows    int
+	color      bool
 	lastVer    uint64
 	lastRender time.Time
 }
@@ -39,6 +41,9 @@ func (v *liveView) render(snap session.Snapshot, force bool) {
 	elapsed := time.Since(st.StartedAt).Round(time.Second)
 	fmt.Fprintf(&sb, "Heimdall Listener  |  %s  |  %s  |  elapsed %s  |  Ctrl-C to stop and write results\n",
 		strings.Join(v.ifaces, ","), v.backend, elapsed)
+	if len(snap.Alerts) > 0 {
+		sb.WriteString(alertBlock(snap.Alerts, v.color))
+	}
 	fmt.Fprintf(&sb, "packets %d  events %d  hosts %d  drops %d  decode errors %d", st.Packets, st.Events, st.UniqueHosts, st.Dropped, st.DecodeErrors)
 	var protos []string
 	for _, p := range decode.AllProtocols() {
@@ -49,18 +54,7 @@ func (v *liveView) render(snap session.Snapshot, force bool) {
 	if len(protos) > 0 {
 		fmt.Fprintf(&sb, "  |  %s", strings.Join(protos, "  "))
 	}
-	sb.WriteString("\n")
-	if len(snap.Alerts) > 0 {
-		fmt.Fprintf(&sb, "\nALERTS (%d)\n", len(snap.Alerts))
-		for i, a := range snap.Alerts {
-			if i >= 5 {
-				fmt.Fprintf(&sb, "  ... %d more\n", len(snap.Alerts)-5)
-				break
-			}
-			fmt.Fprintf(&sb, "  [%s] %s  %s (x%d)\n", strings.ToUpper(string(a.Severity)), a.SourceIP, a.Title, a.Count)
-		}
-	}
-	sb.WriteString("\n")
+	sb.WriteString("\n\n")
 
 	entries := snap.Entries
 	sort.SliceStable(entries, func(i, j int) bool {
@@ -86,6 +80,58 @@ func (v *liveView) render(snap session.Snapshot, force bool) {
 	}
 	tw.Flush()
 	fmt.Fprint(v.w, sb.String())
+}
+
+// alertBlock renders the alert list as a framed block, bold red when colour
+// is on, so it is the first thing a reader sees.
+func alertBlock(alerts []run.Alert, color bool) string {
+	var sb strings.Builder
+	rule := strings.Repeat("═", 78)
+	sb.WriteString(paint(color, ansiBoldRed, rule) + "\n")
+	sb.WriteString(paint(color, ansiBoldRed, fmt.Sprintf("⚠  ALERTS (%d)  passive detections, nothing was sent", len(alerts))) + "\n")
+	for i, a := range alerts {
+		if i >= 5 {
+			sb.WriteString(fmt.Sprintf("   ... %d more (see the Alerts section of the report)\n", len(alerts)-5))
+			break
+		}
+		style := ansiBoldYel
+		if a.Severity == run.SeverityHigh {
+			style = ansiBoldRed
+		}
+		sb.WriteString(paint(color, style, fmt.Sprintf("   [%s] %s  %s (x%d)", strings.ToUpper(string(a.Severity)), a.SourceIP, a.Title, a.Count)) + "\n")
+	}
+	sb.WriteString(paint(color, ansiBoldRed, rule) + "\n")
+	return sb.String()
+}
+
+// alertBannerLines summarises alerts for the end of a capture (max 5 lines).
+func alertBannerLines(r *run.Run, color bool) []string {
+	if len(r.Alerts) == 0 {
+		return nil
+	}
+	lines := []string{paint(color, ansiBoldRed, fmt.Sprintf("⚠ %d alert(s) detected:", len(r.Alerts)))}
+	for i, a := range r.Alerts {
+		if i >= 5 {
+			lines = append(lines, fmt.Sprintf("  ... %d more", len(r.Alerts)-5))
+			break
+		}
+		style := ansiBoldYel
+		if a.Severity == run.SeverityHigh {
+			style = ansiBoldRed
+		}
+		lines = append(lines, paint(color, style, fmt.Sprintf("  [%s] %s  %s", strings.ToUpper(string(a.Severity)), a.SourceIP, a.Title)))
+	}
+	return lines
+}
+
+// hasHighAlert reports whether any alert is high severity.
+func hasHighAlert(r *run.Run) bool {
+	for _, a := range r.Alerts {
+		if a.Severity == run.SeverityHigh {
+			return true
+		}
+	}
+	return false
 }
 
 // statusLine is the non-interactive progress line for logs/pipes.

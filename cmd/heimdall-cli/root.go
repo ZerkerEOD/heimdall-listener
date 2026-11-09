@@ -28,8 +28,31 @@ Typical workflow:
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
+	root.PersistentFlags().BoolVar(&flagNoColor, "no-color", false, "disable ANSI colour in terminal output (NO_COLOR is also honoured)")
 	root.AddCommand(newInterfacesCmd(), newCaptureCmd(), newDiffCmd(), newExportCmd(), newServiceCmd(), newVersionCmd())
 	return root
+}
+
+// flagNoColor is set by --no-color.
+var flagNoColor bool
+
+// colorEnabled reports whether ANSI colour should be used for f.
+func colorEnabled(f *os.File) bool {
+	return !flagNoColor && os.Getenv("NO_COLOR") == "" && isTerminal(f)
+}
+
+const (
+	ansiReset   = "\x1b[0m"
+	ansiBoldRed = "\x1b[1;31m"
+	ansiBoldYel = "\x1b[1;33m"
+)
+
+// paint wraps s in an ANSI style when colour is enabled.
+func paint(enabled bool, style, s string) string {
+	if !enabled {
+		return s
+	}
+	return style + s + ansiReset
 }
 
 func newVersionCmd() *cobra.Command {

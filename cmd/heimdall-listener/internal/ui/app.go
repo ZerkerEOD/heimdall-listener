@@ -26,6 +26,13 @@ import (
 	"github.com/ZerkerEOD/heimdall-listener/pkg/version"
 )
 
+// Tab indexes.
+const (
+	tabLive = iota
+	tabAlerts
+	tabCompare
+)
+
 const (
 	appID          = "com.heimdall.listener"
 	prefInterface  = "interface"
@@ -58,6 +65,9 @@ type App struct {
 	table      *widget.Table
 	detail     *widget.RichText
 	alerts     *widget.RichText
+	banner     *fyne.Container
+	bannerText *widget.Label
+	seenAlerts map[string]struct{}
 	status     *widget.Label
 	ifaceSel   *widget.Select
 	filterSel  *widget.Select
@@ -96,7 +106,7 @@ func Run(args []string) {
 // newApp wires the UI onto fy. It is separate from Run so tests can build
 // the interface with a test app.
 func newApp(fy fyne.App) *App {
-	a := &App{fy: fy, m: newModel(), agg: session.NewAggregator(session.Options{})}
+	a := &App{fy: fy, m: newModel(), agg: session.NewAggregator(session.Options{}), seenAlerts: map[string]struct{}{}}
 	fy.Settings().SetTheme(heimdallTheme{})
 	a.win = fy.NewWindow("Heimdall Listener")
 	a.win.SetMaster()
@@ -200,7 +210,7 @@ func (a *App) buildUI() {
 		widget.NewToolbarAction(theme.FileTextIcon(), a.exportCSV),
 		widget.NewToolbarAction(theme.ListIcon(), a.exportSummary),
 		widget.NewToolbarSeparator(),
-		widget.NewToolbarAction(theme.ViewRefreshIcon(), func() { a.tabs.SelectIndex(2) }),
+		widget.NewToolbarAction(theme.ViewRefreshIcon(), func() { a.tabs.SelectIndex(tabCompare) }),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.InfoIcon(), a.showAbout),
 	)
@@ -208,7 +218,17 @@ func (a *App) buildUI() {
 		container.NewHBox(widget.NewLabel("Interface:"), a.ifaceSel, widget.NewSeparator(), widget.NewLabel("Show:"), a.filterSel),
 		a.exportVis,
 		a.search)
-	top := container.NewVBox(tb, controls)
+	// Alert banner: hidden until a high or medium alert exists.
+	a.bannerText = widget.NewLabel("")
+	a.bannerText.Importance = widget.DangerImportance
+	a.bannerText.TextStyle = fyne.TextStyle{Bold: true}
+	a.bannerText.Truncation = fyne.TextTruncateEllipsis
+	showAlerts := widget.NewButtonWithIcon("Show alerts", theme.WarningIcon(), func() { a.tabs.SelectIndex(tabAlerts) })
+	showAlerts.Importance = widget.DangerImportance
+	a.banner = container.NewBorder(nil, nil, nil, showAlerts, a.bannerText)
+	a.banner.Hide()
+
+	top := container.NewVBox(tb, controls, a.banner)
 
 	// Live table.
 	a.table = widget.NewTable(
@@ -318,7 +338,49 @@ func (a *App) applySnapshot(snap session.Snapshot) {
 	a.m.setSnapshot(snap)
 	a.refreshTable()
 	a.alerts.ParseMarkdown(alertsMarkdown(snap.Alerts))
+	a.updateAlertUI(snap.Alerts)
 	a.updateStatus()
+}
+
+// updateAlertUI keeps the Alerts tab badge and the banner in sync and sends
+// an OS notification the first time each high/medium alert is seen.
+func (a *App) updateAlertUI(alerts []run.Alert) {
+	item := a.tabs.Items[tabAlerts]
+	hasHigh := false
+	var newest *run.Alert
+	for i := range alerts {
+		al := &alerts[i]
+		if al.Severity == run.SeverityHigh {
+			hasHigh = true
+		}
+		if al.Severity.Rank() > run.SeverityMedium.Rank() {
+			continue
+		}
+		if newest == nil || al.LastSeen.After(newest.LastSeen) {
+			newest = al
+		}
+		if _, seen := a.seenAlerts[al.ID]; !seen {
+			a.seenAlerts[al.ID] = struct{}{}
+			a.fy.SendNotification(fyne.NewNotification(
+				fmt.Sprintf("Heimdall: %s alert", strings.ToUpper(string(al.Severity))),
+				fmt.Sprintf("%s  %s", al.SourceIP, al.Title)))
+		}
+	}
+	switch {
+	case len(alerts) == 0:
+		item.Text, item.Icon = "Alerts", theme.WarningIcon()
+	case hasHigh:
+		item.Text, item.Icon = fmt.Sprintf("Alerts (%d)", len(alerts)), theme.ErrorIcon()
+	default:
+		item.Text, item.Icon = fmt.Sprintf("Alerts (%d)", len(alerts)), theme.WarningIcon()
+	}
+	a.tabs.Refresh()
+	if newest == nil {
+		a.banner.Hide()
+		return
+	}
+	a.bannerText.SetText(fmt.Sprintf("⚠ %d alert(s), newest: [%s] %s  %s", len(alerts), strings.ToUpper(string(newest.Severity)), newest.SourceIP, newest.Title))
+	a.banner.Show()
 }
 
 func (a *App) refreshTable() {
@@ -462,7 +524,9 @@ func (a *App) clearResults() {
 		a.m = newModel()
 		a.m.setSnapshot(a.agg.Snapshot())
 		a.m.dirty = false
+		a.seenAlerts = map[string]struct{}{}
 		a.alerts.ParseMarkdown(alertsMarkdown(nil))
+		a.updateAlertUI(nil)
 		a.refreshTable()
 		a.updateStatus()
 	}
@@ -597,7 +661,9 @@ func (a *App) loadRun(r *run.Run, name string) {
 	a.m.dirty = false
 	a.m.loadedFile = name
 	a.filterSel.SetSelected(filterAll)
+	a.seenAlerts = map[string]struct{}{}
 	a.alerts.ParseMarkdown(alertsMarkdown(r.Alerts))
+	a.updateAlertUI(r.Alerts)
 	a.refreshTable()
 	a.updateStatus()
 }

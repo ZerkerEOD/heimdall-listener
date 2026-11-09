@@ -4,6 +4,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"fyne.io/fyne/v2"
@@ -52,6 +53,16 @@ func TestAppBuildsAndRendersSnapshot(t *testing.T) {
 	if a.status.Text == "" {
 		t.Fatal("status empty")
 	}
+	// Alert prominence: tab badge and banner.
+	if a.tabs.Items[tabAlerts].Text != "Alerts (1)" {
+		t.Fatalf("alerts tab = %q", a.tabs.Items[tabAlerts].Text)
+	}
+	if !a.banner.Visible() || !strings.Contains(a.bannerText.Text, "10.0.0.66") || !strings.Contains(a.bannerText.Text, "[HIGH]") {
+		t.Fatalf("banner visible=%v text=%q", a.banner.Visible(), a.bannerText.Text)
+	}
+	if len(a.seenAlerts) != 1 {
+		t.Fatalf("seenAlerts = %d", len(a.seenAlerts))
+	}
 	// Loading a run switches to read-only viewing.
 	r := a.currentRun(true)
 	if len(r.Entries) != 4 || len(r.Alerts) != 1 {
@@ -70,6 +81,9 @@ func TestAppBuildsAndRendersSnapshot(t *testing.T) {
 	rows, _ = a.table.Length()
 	if a.readOnly || rows != 0 {
 		t.Fatal("clearResults state")
+	}
+	if a.banner.Visible() || a.tabs.Items[tabAlerts].Text != "Alerts" || len(a.seenAlerts) != 0 {
+		t.Fatalf("alert UI not reset: visible=%v tab=%q", a.banner.Visible(), a.tabs.Items[tabAlerts].Text)
 	}
 	_ = run.SchemaVersion
 }

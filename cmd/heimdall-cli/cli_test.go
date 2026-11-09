@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -87,5 +88,51 @@ func TestCaptureRequiresInterface(t *testing.T) {
 	}
 	if _, err := parseTrusted([]string{"fe80::1", "nope"}); err == nil {
 		t.Fatal("bad trusted address must fail")
+	}
+}
+
+func TestAlertBannerAndExitCode(t *testing.T) {
+	r := run.New(run.ToolInfo{})
+	if alertBannerLines(r, true) != nil || hasHighAlert(r) {
+		t.Fatal("no alerts must produce no banner")
+	}
+	r.Alerts = []run.Alert{
+		{ID: "a|1", Severity: run.SeverityLow, SourceIP: "10.0.0.2", Title: "Answers mDNS for many names"},
+		{ID: "b|2", Severity: run.SeverityHigh, SourceIP: "10.0.0.66", Title: "Answered a WPAD name lookup"},
+	}
+	plain := alertBannerLines(r, false)
+	if len(plain) != 3 || !strings.Contains(plain[0], "2 alert(s)") || !strings.Contains(plain[2], "[HIGH] 10.0.0.66") {
+		t.Fatalf("plain banner = %q", plain)
+	}
+	for _, l := range plain {
+		if strings.Contains(l, "\x1b[") {
+			t.Fatalf("plain banner contains escape codes: %q", l)
+		}
+	}
+	colored := alertBannerLines(r, true)
+	if !strings.Contains(colored[2], ansiBoldRed) || !strings.Contains(colored[1], ansiBoldYel) {
+		t.Fatalf("coloured banner = %q", colored)
+	}
+	if !hasHighAlert(r) {
+		t.Fatal("high alert expected")
+	}
+	block := alertBlock(r.Alerts, false)
+	if !strings.Contains(block, "ALERTS (2)") || strings.Contains(block, "\x1b[") {
+		t.Fatalf("alert block = %q", block)
+	}
+	var ec exitCodeError = exitCodeError{code: exitHighAlert}
+	if ec.code != 3 || ec.Error() == "" {
+		t.Fatal("exit code error")
+	}
+}
+
+func TestColorFlag(t *testing.T) {
+	flagNoColor = true
+	defer func() { flagNoColor = false }()
+	if colorEnabled(os.Stdout) {
+		t.Fatal("--no-color must disable colour")
+	}
+	if paint(false, ansiBoldRed, "x") != "x" || paint(true, ansiBoldRed, "x") != ansiBoldRed+"x"+ansiReset {
+		t.Fatal("paint")
 	}
 }

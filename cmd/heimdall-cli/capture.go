@@ -44,7 +44,10 @@ otherwise a status line is logged periodically. When the capture ends
 summary is printed.
 
 Nothing is ever transmitted. Promiscuous mode is enabled by default so that
-mirror/SPAN ports work; broadcast and multicast are received either way.`,
+mirror/SPAN ports work; broadcast and multicast are received either way.
+
+Exit status: 0 normally, 3 when at least one HIGH alert (suspected poisoner
+or rogue DHCPv6 server) was raised, 2 when capture privileges are missing.`,
 		Example: `  heimdall-cli capture -i eth0
   heimdall-cli capture -i eth0 -d 1h -o baseline.json --summary baseline.txt
   heimdall-cli capture -i "Ethernet 2" -d 30m -o run.json        (Windows friendly name)
@@ -60,7 +63,7 @@ mirror/SPAN ports work; broadcast and multicast are received either way.`,
 	fl.StringVar(&f.out.csvPath, "csv", "", "write aggregated entries as CSV")
 	fl.StringVar(&f.out.summaryPath, "summary", "", "write the per-host remediation report (text)")
 	fl.StringVar(&f.out.summaryCSVPath, "summary-csv", "", "write the per-host summary as CSV")
-	fl.BoolVarP(&f.quiet, "quiet", "q", false, "no live table or status lines; only errors and 'wrote ...' notices")
+	fl.BoolVarP(&f.quiet, "quiet", "q", false, "no live table, status lines or report; alerts and 'wrote ...' notices are still printed")
 	fl.BoolVar(&f.jsonl, "jsonl", false, "stream one JSON object per event to stdout (implies no live table)")
 	fl.BoolVar(&f.noPromisc, "no-promisc", false, "do not enable promiscuous mode")
 	fl.StringVar(&f.filter, "filter", capture.DefaultFilter, "libpcap filter expression (libpcap backend only)")
@@ -154,7 +157,7 @@ func runCapture(cmd *cobra.Command, f captureFlags) error {
 		fmt.Fprintf(stderr, "capturing on %s via %s; press Ctrl-C to stop\n", strings.Join(names, ","), capture.Backend())
 	}
 
-	view := &liveView{w: stdout, ifaces: names, backend: capture.Backend(), maxRows: 40}
+	view := &liveView{w: stdout, ifaces: names, backend: capture.Backend(), maxRows: 40, color: colorEnabled(os.Stdout)}
 	refresh := time.NewTicker(time.Second)
 	defer refresh.Stop()
 	status := time.NewTicker(f.statusEvery)
@@ -215,13 +218,23 @@ loop:
 	} else if !f.quiet {
 		printShortSummary(stderr, r)
 	}
+	// Alerts are findings, not progress: always surface them, even with --quiet.
+	for _, line := range alertBannerLines(r, colorEnabled(os.Stderr)) {
+		fmt.Fprintln(stderr, line)
+	}
 	if err := f.out.write(r, stderr); err != nil {
 		return err
 	}
 	if !f.out.any() && !f.quiet && !f.jsonl {
 		fmt.Fprintln(stderr, "tip: pass -o run.json to save this run for 'heimdall-cli diff' or the GUI")
 	}
-	return runErr
+	if runErr != nil {
+		return runErr
+	}
+	if hasHighAlert(r) {
+		return exitCodeError{code: exitHighAlert}
+	}
+	return nil
 }
 
 func printShortSummary(w interface{ Write([]byte) (int, error) }, r *run.Run) {

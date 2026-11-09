@@ -104,7 +104,17 @@ func alertsMarkdown(alerts []run.Alert) string {
 			"Note: LLMNR, NetBIOS and DHCPv6 *responses* are unicast to the victim. On a switched network this sensor only sees responses to its own lookups unless it is on a mirror/SPAN port. mDNS responses are multicast and always visible."
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "## %d alert(s)\n\nAll detections are passive: nothing was sent to these hosts.\n\n", len(alerts))
+	counts := map[run.Severity]int{}
+	for _, a := range alerts {
+		counts[a.Severity]++
+	}
+	var parts []string
+	for _, sev := range []run.Severity{run.SeverityHigh, run.SeverityMedium, run.SeverityLow, run.SeverityInfo} {
+		if counts[sev] > 0 {
+			parts = append(parts, fmt.Sprintf("%d %s", counts[sev], sev))
+		}
+	}
+	fmt.Fprintf(&b, "## %d alert(s): %s\n\nAll detections are passive: nothing was sent to these hosts.\n\n", len(alerts), strings.Join(parts, ", "))
 	for _, a := range alerts {
 		fmt.Fprintf(&b, "### %s %s\n\n", a.SourceIP, alertHeading(a))
 		if a.Evidence != "" {

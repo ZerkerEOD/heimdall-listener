@@ -88,7 +88,10 @@ Viewing a saved run in the GUI needs no privileges at all (`heimdall-listener ru
    report (text). Tick *Export visible rows only* to export just what the current filter shows.
 5. **Open run** loads a saved file (or start the program with the file as an argument).
 
-The **Alerts** tab lists the passive detections with evidence and what to do about them.
+**Alerts** are hard to miss: the Alerts tab shows a count badge (red icon when something is HIGH), a red
+banner appears above the tabs with the newest high/medium alert and a *Show alerts* button, the affected
+host's rows get a red marker, and your desktop gets a notification the first time each alert is raised.
+The Alerts tab itself lists every detection with evidence and what to do about it.
 
 ![Alerts](img/gui-alerts.png)
 
@@ -112,6 +115,11 @@ heimdall-cli diff baseline.json after.json       what appeared, what was resolve
 heimdall-cli export after.json --format summary  render a saved run (csv | summary | summary-csv | json)
 heimdall-cli version                             version and capture backend
 ```
+
+Alerts show up in a red block at the top of the live view as soon as they are raised, and are repeated on
+stderr after the capture ends (even with `--quiet`). `capture` exits with status 3 when a HIGH alert was
+raised, 2 when capture privileges are missing, so scripts can react. Use `--no-color` (or `NO_COLOR`) for
+plain output.
 
 `capture` accepts `-i` more than once to listen on several interfaces at the same time. On Windows the
 interface can be given by its friendly name (`-i "Ethernet 2"`). When stdout is not a terminal the live table
@@ -165,11 +173,14 @@ Log and to `heimdall.log` in the output directory, and restarts on failure.
 lookups the tool is meant to catch, so you can verify a sensor on your own segment in a minute:
 
 ```sh
-heimdall-cli capture -i eth0 -d 30s -o test.json &          # in one terminal
-python3 scripts/gen-test-traffic.py eth0 full                # in another; then wait for the capture
+heimdall-cli capture -i eth0 -d 30s -o test.json             # terminal 1: start listening first
+python3 scripts/gen-test-traffic.py eth0 full                # terminal 2, while the capture runs
 heimdall-cli export test.json                                # LLMNR, NetBIOS, mDNS and DHCPv6 rows from this host
 python3 scripts/gen-test-traffic.py eth0 responder           # during a second capture: raises llmnr-nbns-responder
 ```
+
+`full` must run while a capture is already listening. `responder` makes *this* machine look like a
+poisoner, so the alert names this machine's own IP, not the gateway it answered to.
 
 ## Cloud and virtual networks
 
