@@ -2,6 +2,8 @@ MODULE  := github.com/ZerkerEOD/heimdall-listener
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 COMMIT  ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
 DATE    ?= $(shell date -u +%Y-%m-%d)
+# fyne package only accepts x.y.z: strip the leading v and anything after the numeric part.
+APPVER  := $(shell echo '$(VERSION)' | sed -E 's/^v//; s/^([0-9]+(\.[0-9]+){0,2}).*/\1/; t; s/.*/0.0.0/')
 LDFLAGS := -s -w -X $(MODULE)/pkg/version.Version=$(VERSION) -X $(MODULE)/pkg/version.Commit=$(COMMIT) -X $(MODULE)/pkg/version.Date=$(DATE)
 GOFLAGS := -trimpath
 DIST    := dist
@@ -54,7 +56,7 @@ gui-linux:          ## needs libpcap-dev, libgl1-mesa-dev, xorg-dev
 gui-windows:        ## cross-compiled with mingw; icon + no console via fyne package
 	@mkdir -p $(DIST)
 	cd cmd/heimdall-listener && CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=$(MINGW) \
-		$(FYNE) package -os windows --release --app-version $(patsubst v%,%,$(VERSION)) \
+		$(FYNE) package -os windows --release --app-version $(APPVER) \
 		--name heimdall-listener
 	mv cmd/heimdall-listener/heimdall-listener.exe $(DIST)/heimdall-listener-windows-amd64.exe
 
