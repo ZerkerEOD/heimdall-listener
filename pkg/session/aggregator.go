@@ -36,7 +36,12 @@ type Entry struct {
 	LastDetail string
 }
 
-const maxAnswersPerEntry = 32
+const (
+	maxAnswersPerEntry = 32
+	// MaxEntries bounds memory against a host spraying random names at a
+	// long-running sensor. Beyond it, new keys are counted, not stored.
+	MaxEntries = 50000
+)
 
 // Stats are counters for the whole aggregation.
 type Stats struct {
@@ -44,9 +49,11 @@ type Stats struct {
 	Events       uint64
 	DecodeErrors uint64
 	Dropped      uint64
-	UniqueHosts  int
-	PerProtocol  map[decode.Protocol]uint64
-	StartedAt    time.Time
+	// Overflow counts events discarded because MaxEntries was reached.
+	Overflow    uint64
+	UniqueHosts int
+	PerProtocol map[decode.Protocol]uint64
+	StartedAt   time.Time
 }
 
 // Snapshot is an immutable copy of the aggregator state.
@@ -149,6 +156,10 @@ func (a *Aggregator) Add(ev decode.Event) {
 	k := Key{SrcIP: ev.SrcIP, Protocol: ev.Protocol, Kind: ev.Kind, Name: ev.Name}
 	e, ok := a.entries[k]
 	if !ok {
+		if len(a.entries) >= MaxEntries {
+			a.stats.Overflow++
+			return
+		}
 		e = &Entry{Key: k, FirstSeen: ev.Time, WPAD: ev.WPAD}
 		a.entries[k] = e
 		a.hosts[ev.SrcIP] = struct{}{}

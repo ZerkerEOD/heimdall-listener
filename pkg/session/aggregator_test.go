@@ -264,3 +264,44 @@ func TestWPADServerRuleEscalates(t *testing.T) {
 		t.Fatal("responder then GET must be high")
 	}
 }
+
+func TestAggregatorEntryCap(t *testing.T) {
+	a := newAgg()
+	for i := 0; i < MaxEntries+10; i++ {
+		a.Add(query(ipA, decode.ProtoLLMNR, "n"+uitoa(uint64(i)), "A", t0))
+	}
+	s := a.Snapshot()
+	if len(s.Entries) != MaxEntries || s.Stats.Overflow != 10 {
+		t.Fatalf("entries=%d overflow=%d", len(s.Entries), s.Stats.Overflow)
+	}
+	// Existing keys still update when full.
+	a.Add(query(ipA, decode.ProtoLLMNR, "n0", "A", t0))
+	if a.Snapshot().Stats.Overflow != 10 {
+		t.Fatal("updating an existing key must not count as overflow")
+	}
+}
+
+func uitoa(n uint64) string {
+	if n == 0 {
+		return "0"
+	}
+	var b [20]byte
+	i := len(b)
+	for n > 0 {
+		i--
+		b[i] = byte('0' + n%10)
+		n /= 10
+	}
+	return string(b[i:])
+}
+
+func TestResponderNameCapKeepsWorking(t *testing.T) {
+	a := newAgg()
+	for i := 0; i < maxResponderNames+50; i++ {
+		a.Add(response(ipR, ipA, decode.ProtoLLMNR, "x"+uitoa(uint64(i)), t0.Add(time.Duration(i)*time.Millisecond)))
+	}
+	al := alertsByRule(a)[RuleResponder+"|10.0.0.66"]
+	if al.Severity != run.SeverityHigh {
+		t.Fatalf("spraying host must still be flagged: %+v", al)
+	}
+}

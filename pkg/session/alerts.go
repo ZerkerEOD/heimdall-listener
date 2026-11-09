@@ -26,6 +26,9 @@ const (
 	responderNameLimit  = 3 // distinct LLMNR/NBNS names answered within the window
 	mdnsResponderLimit  = 5 // distinct mDNS A/AAAA names answered within the window
 	maxAlertNamesStored = 50
+	maxQueriedNames     = 20000 // bounded set of names seen queried
+	maxResponderNames   = 2000  // per responding host
+	maxResponders       = 5000  // responding hosts tracked
 )
 
 type responder struct {
@@ -118,6 +121,11 @@ func (s *alertState) observe(ev decode.Event) {
 	switch ev.Protocol {
 	case decode.ProtoLLMNR, decode.ProtoNBNS:
 		if ev.Kind == decode.KindQuery {
+			if len(s.queried) >= maxQueriedNames {
+				// Keep the set bounded; losing history only makes the
+				// "nobody asked" rule more cautious, never less.
+				s.queried = map[string]struct{}{}
+			}
 			s.queried[ev.Name] = struct{}{}
 			return
 		}
@@ -137,13 +145,37 @@ func (s *alertState) observe(ev decode.Event) {
 	}
 }
 
-func (s *alertState) observeResponder(ev decode.Event) {
-	r := s.responders[ev.SrcIP]
+// track returns the responder record for ip in m, creating it within the
+// configured bounds, and records name at ts.
+func track(m map[netip.Addr]*responder, ip netip.Addr, name string, ts time.Time) *responder {
+	r := m[ip]
 	if r == nil {
+		if len(m) >= maxResponders {
+			return nil
+		}
 		r = &responder{names: map[string]time.Time{}}
-		s.responders[ev.SrcIP] = r
+		m[ip] = r
 	}
-	r.names[ev.Name] = ev.Time
+	if _, known := r.names[name]; !known && len(r.names) >= maxResponderNames {
+		// Evict the oldest name so the window logic keeps working.
+		var oldest string
+		var oldestT time.Time
+		for n, t := range r.names {
+			if oldest == "" || t.Before(oldestT) {
+				oldest, oldestT = n, t
+			}
+		}
+		delete(r.names, oldest)
+	}
+	r.names[name] = ts
+	return r
+}
+
+func (s *alertState) observeResponder(ev decode.Event) {
+	r := track(s.responders, ev.SrcIP, ev.Name, ev.Time)
+	if r == nil {
+		return
+	}
 	distinct := recentNames(r, ev.Time)
 	_, wasQueried := s.queried[ev.Name]
 
@@ -175,12 +207,10 @@ func (s *alertState) observeResponder(ev decode.Event) {
 }
 
 func (s *alertState) observeMDNS(ev decode.Event) {
-	r := s.mdns[ev.SrcIP]
+	r := track(s.mdns, ev.SrcIP, ev.Name, ev.Time)
 	if r == nil {
-		r = &responder{names: map[string]time.Time{}}
-		s.mdns[ev.SrcIP] = r
+		return
 	}
-	r.names[ev.Name] = ev.Time
 	distinct := recentNames(r, ev.Time)
 	switch {
 	case ev.WPAD:
@@ -212,6 +242,9 @@ func (s *alertState) observeDHCPv6Server(ev decode.Event) {
 
 func (s *alertState) observeWPADServer(ev decode.Event) {
 	srv := ev.Answers[0]
+	if _, known := s.wpadSrv[srv]; !known && len(s.wpadSrv) >= maxResponders {
+		return
+	}
 	s.wpadSrv[srv]++
 	s.reevaluateWPADServer(srv, ev.Time)
 }

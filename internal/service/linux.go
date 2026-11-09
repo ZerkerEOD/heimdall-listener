@@ -37,6 +37,7 @@ Restart=on-failure
 RestartSec=5
 DynamicUser=yes
 StateDirectory=%s
+StateDirectoryMode=0750
 AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
 CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN
 NoNewPrivileges=yes
