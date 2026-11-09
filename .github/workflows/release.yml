@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev gcc-mingw-w64-x86-64
+          go install fyne.io/tools/cmd/fyne@latest
+      - run: go test ./...
+      - name: Build all artifacts
+        run: make dist VERSION=${GITHUB_REF_NAME}
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/heimdall-listener-linux-amd64
+            dist/heimdall-listener-windows-amd64.exe
+            dist/heimdall-cli-linux-amd64
+            dist/heimdall-cli-linux-arm64
+            dist/heimdall-cli-windows-amd64.exe
+            dist/SHA256SUMS
+          generate_release_notes: true

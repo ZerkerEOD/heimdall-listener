@@ -13,10 +13,30 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - name: Install system dependencies
+      - name: Install system dependencies (libpcap for the GUI/cgo tests, GL/X11 for Fyne)
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libpcap-dev libgl1-mesa-dev xorg-dev
       - run: go vet ./...
       - run: go test -race ./...
-      - run: go build ./...
+      - name: Build GUI (cgo)
+        run: go build ./cmd/heimdall-listener
+      - name: Build CLI (pure Go, Linux)
+        run: CGO_ENABLED=0 go build ./cmd/heimdall-cli
+      - name: Build CLI (pure Go, Windows)
+        run: CGO_ENABLED=0 GOOS=windows go build ./cmd/heimdall-cli
+      - name: Build CLI (pure Go, Linux arm64)
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build ./cmd/heimdall-cli
+
+  windows:
+    runs-on: windows-latest
+    env:
+      CGO_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go vet ./pkg/... ./internal/... ./cmd/heimdall-cli/...
+      - run: go test ./pkg/... ./internal/... ./cmd/heimdall-cli/...
+      - run: go build ./cmd/heimdall-cli
