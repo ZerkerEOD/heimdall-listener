@@ -3,7 +3,7 @@
 The desktop application has one window with a toolbar, a controls row, an alert banner (hidden until
 needed), three tabs and a status bar. Nothing it does transmits a packet.
 
-![Live view](../img/gui-live.png)
+![Live view](img/gui-live.png)
 
 ## Toolbar (top row, left to right)
 

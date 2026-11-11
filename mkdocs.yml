@@ -1,0 +1,60 @@
+site_name: Heimdall Listener
+site_url: https://zerkersec.io/heimdall-listener/docs/
+site_description: Passive detection of the legacy name-resolution protocols that credential-relay attacks feed on
+site_author: ZerkerEOD
+repo_name: ZerkerEOD/heimdall-listener
+repo_url: https://github.com/ZerkerEOD/heimdall-listener
+edit_uri: edit/main/docs/
+
+# Theme files are injected at serve time by the zerkersec docs Worker
+# (github.com/ZerkerEOD/docs-theme); nothing theme-related lives in this repo.
+theme:
+  name: material
+  font: false
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - include-markdown
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - GUI tour: GUI.md
+  - CLI reference: CLI.md
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ZerkerEOD/heimdall-listener

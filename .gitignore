@@ -50,3 +50,6 @@ dist/
 /*.json
 /*.csv
 /*.txt
+
+# MkDocs build output
+/site/

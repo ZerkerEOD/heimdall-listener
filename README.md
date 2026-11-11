@@ -15,7 +15,7 @@ It comes as two programs that share the same engine:
 **Nothing is ever transmitted.** Both programs only open the interface for reading. No probes, no
 canary lookups, no responses.
 
-![Live view](img/gui-live.png)
+![Live view](docs/img/gui-live.png)
 
 ## What it detects
 
@@ -103,7 +103,7 @@ banner appears above the tabs with the newest high/medium alert and a *Show aler
 host's rows get a red marker, and your desktop gets a notification the first time each alert is raised.
 The Alerts tab itself lists every detection with evidence and what to do about it.
 
-![Alerts](img/gui-alerts.png)
+![Alerts](docs/img/gui-alerts.png)
 
 ### Comparing runs
 
@@ -112,7 +112,7 @@ baseline file and compare it against the live session or a second file. Pairs of
 disappeared are **resolved**; new pairs and new hosts are highlighted; unchanged pairs show which names were
 added (+) or went away (-). The diff can be exported as CSV or JSON for a change ticket.
 
-![Compare](img/gui-compare.png)
+![Compare](docs/img/gui-compare.png)
 
 ## Using the CLI (headless servers)
 
@@ -234,9 +234,9 @@ This software is provided "as is" without any warranty of any kind. It identifie
 *usually* indicate a weakness or an attack; it can miss traffic and it can flag legitimate devices. Verify
 findings before acting on them. Use at your own risk.
 
-## Bug reports, feature requests and donations
+## Bug reports, feature requests and support
 
 Issues and pull requests are welcome; this is a side project worked on as time allows. If it helped you
-disable a legacy protocol before a pentest or red team found it, a coffee is appreciated:
-
-[![Donate with PayPal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/donate/?hosted_button_id=6KT8R6AA7YJBS)
+disable a legacy protocol before a pentest or red team found it, you can support the work on
+[Patreon](https://zerkersec.io/supporter). Supporters at the Foothold tier and above get priority
+triage on issues they open here, applied automatically by the `supporter` label.
