@@ -53,3 +53,4 @@ dist/
 
 # MkDocs build output
 /site/
+!/requirements-docs.txt
