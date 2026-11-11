@@ -1,0 +1,934 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Passive detection of the legacy name-resolution protocols that credential-relay attacks feed on">
+      
+      
+        <meta name="author" content="ZerkerEOD">
+      
+      
+        <link rel="canonical" href="https://zerkersec.io/heimdall-listener/docs/dev/CLI/">
+      
+      
+        <link rel="prev" href="../GUI/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>CLI reference - Heimdall Listener</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#heimdall-cli-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Heimdall Listener" class="md-header__button md-logo" aria-label="Heimdall Listener" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Heimdall Listener
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CLI reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ZerkerEOD/heimdall-listener" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ZerkerEOD/heimdall-listener
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Heimdall Listener" class="md-nav__button md-logo" aria-label="Heimdall Listener" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Heimdall Listener
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ZerkerEOD/heimdall-listener" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ZerkerEOD/heimdall-listener
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GUI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GUI tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#privileges-and-exit-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privileges and exit codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interfaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        capture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        diff
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        export
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#privileges-and-exit-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privileges and exit codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interfaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        capture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        diff
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        export
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="heimdall-cli-reference">heimdall-cli reference<a class="headerlink" href="#heimdall-cli-reference" title="Permanent link">&para;</a></h1>
+<p><code>heimdall-cli</code> is the headless Heimdall Listener. Every command prints detailed help with <code>--help</code>;
+this page collects all of it in one place. Nothing the tool does transmits a packet.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>heimdall-cli [--no-color] &lt;command&gt; [flags]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>interfaces</code></td>
+<td>List interfaces you can capture on</td>
+</tr>
+<tr>
+<td><code>capture</code></td>
+<td>Capture until Ctrl-C or a duration, then write files and a report</td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td>Compare two run files: new, resolved, unchanged</td>
+</tr>
+<tr>
+<td><code>export</code></td>
+<td>Render a saved run as CSV, a remediation summary, or JSON</td>
+</tr>
+<tr>
+<td><code>service run</code> / <code>install</code> / <code>uninstall</code></td>
+<td>Long-running sensor with periodic snapshots</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Version, commit and capture backend</td>
+</tr>
+<tr>
+<td><code>completion bash\|zsh\|fish\|powershell</code></td>
+<td>Shell completion script</td>
+</tr>
+</tbody>
+</table>
+<p>Global flag: <code>--no-color</code> disables ANSI colour (the <code>NO_COLOR</code> environment variable does the same).</p>
+<h2 id="privileges-and-exit-codes">Privileges and exit codes<a class="headerlink" href="#privileges-and-exit-codes" title="Permanent link">&para;</a></h2>
+<p>Capturing needs raw-socket rights: <code>sudo</code> or, better, <code>sudo setcap cap_net_raw,cap_net_admin+eip heimdall-cli</code>
+on Linux (repeat after replacing the binary); an elevated prompt with Npcap installed on Windows.</p>
+<table>
+<thead>
+<tr>
+<th>Exit status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Finished normally</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Error (bad arguments, unreadable file, capture failure); the message is on stderr</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Missing capture privileges; a hint for this OS is printed</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>capture</code> finished but at least one <strong>HIGH</strong> alert was raised (suspected poisoner or rogue DHCPv6 server)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interfaces">interfaces<a class="headerlink" href="#interfaces" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>heimdall-cli interfaces [--all] [--json]
+</code></pre></div>
+<p>Lists usable interfaces (up, not loopback, with a routable address) as NAME, DESCRIPTION, ADDRESSES, UP.
+<code>--all</code> includes loopback and address-less interfaces; <code>--json</code> prints the list as JSON. On Windows the
+DESCRIPTION column is the friendly name you can pass to <code>-i</code>.</p>
+<h2 id="capture">capture<a class="headerlink" href="#capture" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>heimdall-cli capture -i IFACE [-i IFACE...] [-d DURATION] [-o run.json] [flags]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-i, --interface</code></td>
+<td>required</td>
+<td>Interface to capture on; repeat for several. Name, or Windows friendly name</td>
+</tr>
+<tr>
+<td><code>-d, --duration</code></td>
+<td>0 (until Ctrl-C)</td>
+<td>Stop after this long, e.g. <code>30s</code>, <code>30m</code>, <code>2h</code></td>
+</tr>
+<tr>
+<td><code>-o, --output</code></td>
+<td></td>
+<td>Write the run file (JSON). This is what <code>diff</code> and the GUI read</td>
+</tr>
+<tr>
+<td><code>--csv</code></td>
+<td></td>
+<td>Write aggregated entries as CSV</td>
+</tr>
+<tr>
+<td><code>--summary</code></td>
+<td></td>
+<td>Write the per-host remediation report (text)</td>
+</tr>
+<tr>
+<td><code>--summary-csv</code></td>
+<td></td>
+<td>Write the per-host summary as CSV</td>
+</tr>
+<tr>
+<td><code>-q, --quiet</code></td>
+<td>off</td>
+<td>No live table, status lines or report. Alerts and <code>wrote ...</code> notices still print</td>
+</tr>
+<tr>
+<td><code>--jsonl</code></td>
+<td>off</td>
+<td>Stream one JSON object per event to stdout (no live table); combine with <code>-q</code> for logs/SIEM</td>
+</tr>
+<tr>
+<td><code>--no-promisc</code></td>
+<td>off</td>
+<td>Do not enable promiscuous mode (broadcast/multicast are still received)</td>
+</tr>
+<tr>
+<td><code>--filter</code></td>
+<td>the default BPF expression</td>
+<td>libpcap filter expression; only with the libpcap backend (GUI, Windows CLI)</td>
+</tr>
+<tr>
+<td><code>--trusted-dhcpv6</code></td>
+<td></td>
+<td>Comma-separated IPv6 addresses of legitimate DHCPv6 servers; suppresses the <code>dhcpv6-server</code> alert for them</td>
+</tr>
+<tr>
+<td><code>--status-every</code></td>
+<td>1m</td>
+<td>Interval of the status line when stdout is not a terminal</td>
+</tr>
+</tbody>
+</table>
+<p>What you see while it runs:</p>
+<ul>
+<li>On a terminal: a live view redrawn every second. Top line: interfaces, backend, elapsed time. If any
+  alert exists, a red framed <strong>ALERTS</strong> box comes next. Then counters (packets, events, hosts, kernel
+  drops, decode errors, per-protocol totals) and a table of the aggregated entries sorted WPAD first,
+  then most recent. Press <strong>Ctrl-C</strong> to stop early; results are still written.</li>
+<li>Not on a terminal (cron, systemd, a pipe): one status line per <code>--status-every</code> on stderr.</li>
+<li>With <code>--jsonl</code>: one JSON object per decoded event on stdout, fields <code>time</code>, <code>source_ip</code>, <code>dest_ip</code>,
+  <code>source_mac</code>, <code>protocol</code>, <code>kind</code>, <code>name</code>, <code>query_type</code>, <code>answers</code>, <code>wpad</code>, <code>detail</code>.</li>
+</ul>
+<p>When the capture ends: the remediation report is printed to stdout (unless <code>-q</code> or <code>--jsonl</code>), alert
+lines are printed to stderr, requested files are written, and the exit status reflects HIGH alerts.</p>
+<p>Stopping: <code>-d</code> elapsed, Ctrl-C, or SIGTERM (so <code>timeout</code> and service managers work).</p>
+<h2 id="diff">diff<a class="headerlink" href="#diff" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>heimdall-cli diff BASELINE.json CURRENT.json [-f table|json|csv] [-o FILE]
+</code></pre></div>
+<p>Compares two run files. A <em>pair</em> is one host doing one protocol as one kind (query or response).</p>
+<ul>
+<li><strong>NEW</strong>: pairs present now but not in the baseline. <code>(new host)</code> marks a host absent from the baseline.</li>
+<li><strong>RESOLVED</strong>: pairs in the baseline that are gone now. This is your proof that a remediation worked.
+  <code>(host gone)</code> marks a host that vanished entirely.</li>
+<li><strong>UNCHANGED</strong>: pairs in both; names added since the baseline are prefixed <code>+</code>, names gone <code>-</code>.</li>
+<li><strong>ALERTS</strong>: new, cleared and persisting alerts.</li>
+</ul>
+<p>The header line counts pairs, hosts and WPAD-related pairs on each side. <code>-f json</code> gives the full
+structure (for tooling), <code>-f csv</code> one row per pair.</p>
+<h2 id="export">export<a class="headerlink" href="#export" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>heimdall-cli export RUN.json [-f summary|csv|summary-csv|json] [-o FILE]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>summary</code> (default)</td>
+<td>The remediation report: capture window and counters, exposure by protocol, alerts with evidence and advice, then every host with its protocols, names, WPAD involvement and the exact steps to turn each protocol off</td>
+</tr>
+<tr>
+<td><code>csv</code></td>
+<td>One row per aggregated entry: <code>source_ip, source_mac, protocol, kind, name, wpad, query_types, answers, count, first_seen, last_seen</code></td>
+</tr>
+<tr>
+<td><code>summary-csv</code></td>
+<td>One row per host: protocols, WPAD flag, alerts, names, counts, first/last seen</td>
+</tr>
+<tr>
+<td><code>json</code></td>
+<td>The run file itself, re-sorted and pretty-printed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="service">service<a class="headerlink" href="#service" title="Permanent link">&para;</a></h2>
+<p><code>service run</code> is the foreground process that systemd or the Windows Service Control Manager starts.
+It keeps capturing and writes <code>run-&lt;UTC stamp&gt;.json</code> plus <code>latest.json</code> into <code>--out-dir</code> every
+<code>--snapshot-interval</code>, pruning to <code>--retain</code> files, with a final snapshot on shutdown. Logs go to
+<code>--log-file</code> (default <code>&lt;out-dir&gt;/heimdall.log</code>), and to stderr as well when run from a terminal.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>heimdall-cli service run -i IFACE [flags]
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>heimdall-cli service install -i IFACE [flags]      # root / elevated
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>heimdall-cli service uninstall [--name NAME]      # root / elevated
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Flag (run and install)</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-i, --interface</code></td>
+<td>required</td>
+<td>Interface(s) to capture on</td>
+</tr>
+<tr>
+<td><code>--out-dir</code></td>
+<td><code>/var/lib/heimdall-listener</code> (Linux), <code>%ProgramData%\HeimdallListener</code> (Windows)</td>
+<td>Snapshot directory</td>
+</tr>
+<tr>
+<td><code>--snapshot-interval</code></td>
+<td>5m</td>
+<td>How often to write a snapshot</td>
+</tr>
+<tr>
+<td><code>--retain</code></td>
+<td>48</td>
+<td>Snapshots to keep; 0 keeps all</td>
+</tr>
+<tr>
+<td><code>--rollover</code></td>
+<td>0 (cumulative)</td>
+<td>Reset the aggregation after this long, e.g. <code>24h</code></td>
+</tr>
+<tr>
+<td><code>--log-file</code></td>
+<td><code>&lt;out-dir&gt;/heimdall.log</code></td>
+<td>Log file</td>
+</tr>
+<tr>
+<td><code>--no-promisc</code>, <code>--filter</code>, <code>--trusted-dhcpv6</code></td>
+<td></td>
+<td>As for <code>capture</code></td>
+</tr>
+<tr>
+<td><code>--name</code></td>
+<td><code>heimdall-listener</code></td>
+<td>Service / unit name</td>
+</tr>
+</tbody>
+</table>
+<p><code>install</code> only:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--force</code></td>
+<td>Replace an existing unit or service</td>
+</tr>
+<tr>
+<td><code>--exe</code></td>
+<td>Path to the binary the service should run (default: the one you are running)</td>
+</tr>
+<tr>
+<td><code>--unit-dir</code></td>
+<td>Linux: systemd unit directory (default <code>/etc/systemd/system</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>On Linux <code>install</code> writes a hardened unit (dynamic unprivileged user, only <code>CAP_NET_RAW</code> and
+<code>CAP_NET_ADMIN</code>, <code>ProtectSystem=strict</code>, state directory <code>/var/lib/heimdall-listener</code> with mode 0750)
+and prints the <code>systemctl</code> commands to enable it. On Windows it creates an automatic-start service that
+depends on the Npcap driver, registers an Event Log source and sets restart-on-failure. <code>uninstall</code>
+removes the registration and keeps the snapshots.</p>
+<h2 id="files">Files<a class="headerlink" href="#files" title="Permanent link">&para;</a></h2>
+<p>Run files are JSON with <code>schema_version: 1</code>, tool and host metadata, the capture window and counters,
+<code>entries</code> (one per host/protocol/kind/name with counts and timestamps) and <code>alerts</code>. They are written
+atomically (temp file plus rename), so <code>latest.json</code> is always complete even while it is being replaced.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ZerkerEOD/heimdall-listener" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
