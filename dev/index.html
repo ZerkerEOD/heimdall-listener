@@ -974,6 +974,11 @@ lookups the tool is meant to catch, so you can verify a sensor on your own segme
 </code></pre></div>
 <p><code>full</code> must run while a capture is already listening. <code>responder</code> makes <em>this</em> machine look like a
 poisoner, so the alert names this machine's own IP, not the gateway it answered to.</p>
+<p>No network at hand? <code>docs/sample-run.json</code> is a synthetic run with a WPAD responder, a rogue DHCPv6
+server and a few ordinary hosts. It needs no privileges to view, and it is what the screenshots show:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>heimdall-listener<span class="w"> </span>docs/sample-run.json<span class="w">          </span><span class="c1"># GUI: Live, Alerts and Compare with real data</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>heimdall-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>docs/sample-run.json<span class="w">        </span><span class="c1"># CLI: the remediation report for the same run</span>
+</code></pre></div>
 <h2 id="cloud-and-virtual-networks">Cloud and virtual networks<a class="headerlink" href="#cloud-and-virtual-networks" title="Permanent link">&para;</a></h2>
 <p>Azure VNets and AWS VPCs do <strong>not</strong> forward broadcast or multicast traffic. A sensor on a cloud VM therefore
 only sees the VM's <em>own</em> LLMNR/NetBIOS/mDNS/DHCPv6 requests and its unicast DNS/WPAD lookups. That is still
@@ -992,12 +997,12 @@ original VLAN instead.</p>
 <li>Alert thresholds are deliberately conservative and are labelled as <em>suspected</em>; verify before acting.</li>
 </ul>
 <h2 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>make<span class="w"> </span><span class="nb">test</span><span class="w">                     </span><span class="c1"># unit tests (race detector)</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>make<span class="w"> </span>cli-linux-amd64<span class="w">          </span><span class="c1"># static CLI</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>make<span class="w"> </span>cli-windows-amd64<span class="w">        </span><span class="c1"># CLI for Windows (pure Go)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>make<span class="w"> </span>gui-linux<span class="w">                </span><span class="c1"># GUI for Linux (needs libpcap-dev, libgl1-mesa-dev, xorg-dev)</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>make<span class="w"> </span>gui-windows<span class="w">              </span><span class="c1"># GUI for Windows, cross-compiled (needs gcc-mingw-w64 and `make tools`)</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>make<span class="w"> </span>dist<span class="w">                     </span><span class="c1"># everything plus SHA256SUMS in dist/</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>make<span class="w"> </span><span class="nb">test</span><span class="w">                     </span><span class="c1"># unit tests (race detector)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>make<span class="w"> </span>cli-linux-amd64<span class="w">          </span><span class="c1"># static CLI</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>make<span class="w"> </span>cli-windows-amd64<span class="w">        </span><span class="c1"># CLI for Windows (pure Go)</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>make<span class="w"> </span>gui-linux<span class="w">                </span><span class="c1"># GUI for Linux (needs libpcap-dev, libgl1-mesa-dev, xorg-dev)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>make<span class="w"> </span>gui-windows<span class="w">              </span><span class="c1"># GUI for Windows, cross-compiled (needs gcc-mingw-w64 and `make tools`)</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>make<span class="w"> </span>dist<span class="w">                     </span><span class="c1"># everything plus SHA256SUMS in dist/</span>
 </code></pre></div>
 <p>CI runs vet, tests and all builds on every push; tagged <code>v*</code> releases are built and published by GitHub
 Actions.</p>

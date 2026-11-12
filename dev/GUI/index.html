@@ -634,7 +634,9 @@ needed), three tabs and a status bar. Nothing it does transmits a packet.</p>
 </tbody>
 </table>
 <p>You can also open a run file by starting the program with it as an argument:
-<code>heimdall-listener run.json</code> (no privileges needed for viewing).</p>
+<code>heimdall-listener run.json</code> (no privileges needed for viewing). The screenshots on this page are
+<code>heimdall-listener docs/sample-run.json</code>, a synthetic run you can open yourself; they are rendered by
+<code>HEIMDALL_SNAPSHOT_DIR=out HEIMDALL_SNAPSHOT_RUN=docs/sample-run.json go test ./cmd/heimdall-listener/internal/ui -run TestRenderViews</code>.</p>
 <h2 id="controls-row">Controls row<a class="headerlink" href="#controls-row" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Interface</strong>: pick the interface to listen on. The last choice is remembered. Only usable interfaces
