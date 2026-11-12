@@ -210,14 +210,17 @@ func (v *compareView) compare() {
 	base, basePath := v.baseline, v.baselinePath
 	go func() {
 		d := run.Diff(base, cur, basePath, curPath)
-		fyne.Do(func() {
-			v.result = d
-			s := d.Summary
-			v.summary.SetText(fmt.Sprintf("New: %d pair(s), %d host(s), %d WPAD   ·   Resolved: %d pair(s), %d host(s), %d WPAD   ·   Unchanged: %d   ·   Alerts: %d new, %d cleared",
-				s.NewPairs, s.NewHosts, s.NewWPAD, s.ResolvedPairs, s.ResolvedHosts, s.ResolvedWPAD, s.UnchangedPairs, s.NewAlerts, s.ClearedAlerts))
-			v.applyFilter()
-		})
+		fyne.Do(func() { v.setResult(d) })
 	}()
+}
+
+// setResult installs a finished diff, updates the summary line and refreshes the table.
+func (v *compareView) setResult(d *run.DiffResult) {
+	v.result = d
+	s := d.Summary
+	v.summary.SetText(fmt.Sprintf("New: %d pair(s), %d host(s), %d WPAD   ·   Resolved: %d pair(s), %d host(s), %d WPAD   ·   Unchanged: %d   ·   Alerts: %d new, %d cleared",
+		s.NewPairs, s.NewHosts, s.NewWPAD, s.ResolvedPairs, s.ResolvedHosts, s.ResolvedWPAD, s.UnchangedPairs, s.NewAlerts, s.ClearedAlerts))
+	v.applyFilter()
 }
 
 func (v *compareView) applyFilter() {

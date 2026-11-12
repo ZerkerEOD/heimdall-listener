@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -98,7 +99,20 @@ func TestRenderViews(t *testing.T) {
 	defer a.stopTicker()
 	a.win.Resize(fyne.NewSize(1100, 700))
 
-	a.applySnapshot(snap())
+	// HEIMDALL_SNAPSHOT_RUN points at a saved run file to render instead of the small fixture;
+	// the docs screenshots are produced that way (see docs/GUI.md).
+	fixture := true
+	if path := os.Getenv("HEIMDALL_SNAPSHOT_RUN"); path != "" {
+		r, err := run.Load(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		a.win.Resize(fyne.NewSize(1200, 900))
+		a.loadRun(r, filepath.Base(path))
+		fixture = false
+	} else {
+		a.applySnapshot(snap())
+	}
 	a.table.Select(widget.TableCellID{Row: 0, Col: 0})
 	a.table.OnSelected(widget.TableCellID{Row: 0, Col: 0})
 	save := func(name string) {
@@ -128,10 +142,10 @@ func TestRenderViews(t *testing.T) {
 	cur.Entries = append(cur.Entries[1:], run.Entry{SourceIP: "10.0.0.99", Protocol: "LLMNR", Kind: "Query", Name: "newhost", Count: 2})
 	a.compare.baseline, a.compare.baselinePath = base, "baseline.json"
 	a.compare.current, a.compare.currentPath, a.compare.useLive = cur, "current.json", false
-	a.compare.result = run.Diff(base, cur, "baseline.json", "current.json")
-	a.compare.applyFilter()
-	a.compare.summary.SetText("New: 1 pair(s) · Resolved: 1 pair(s) · Unchanged: 3")
-	if len(a.compare.rows) != 5 {
+	a.compare.baseLbl.SetText(fmt.Sprintf("baseline.json (%d entries)", len(base.Entries)))
+	a.compare.curLbl.SetText(fmt.Sprintf("current.json (%d entries)", len(cur.Entries)))
+	a.compare.setResult(run.Diff(base, cur, "baseline.json", "current.json"))
+	if fixture && len(a.compare.rows) != 5 {
 		t.Fatalf("compare rows = %d", len(a.compare.rows))
 	}
 	a.tabs.SelectIndex(2)

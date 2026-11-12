@@ -194,6 +194,14 @@ python3 scripts/gen-test-traffic.py eth0 responder           # during a second c
 `full` must run while a capture is already listening. `responder` makes *this* machine look like a
 poisoner, so the alert names this machine's own IP, not the gateway it answered to.
 
+No network at hand? `docs/sample-run.json` is a synthetic run with a WPAD responder, a rogue DHCPv6
+server and a few ordinary hosts. It needs no privileges to view, and it is what the screenshots show:
+
+```sh
+heimdall-listener docs/sample-run.json          # GUI: Live, Alerts and Compare with real data
+heimdall-cli export docs/sample-run.json        # CLI: the remediation report for the same run
+```
+
 ## Cloud and virtual networks
 
 Azure VNets and AWS VPCs do **not** forward broadcast or multicast traffic. A sensor on a cloud VM therefore

@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "tool": {
+    "name": "heimdall-cli",
+    "version": "v2.0.0"
+  },
+  "host": {
+    "hostname": "sensor01",
+    "os": "linux",
+    "arch": "amd64"
+  },
+  "capture": {
+    "interfaces": [
+      "eth0"
+    ],
+    "backend": "AF_PACKET (pure Go)",
+    "filter": "udp port 5355 or udp port 5353 or udp port 137 or udp dst port 53 or udp port 547 or tcp dst port 80",
+    "promiscuous": true,
+    "started_at": "2026-11-08T10:00:00Z",
+    "ended_at": "2026-11-08T10:30:00Z",
+    "packets_seen": 4821,
+    "events_seen": 212,
+    "decode_errors": 0,
+    "dropped": 0
+  },
+  "entries": [
+    {
+      "source_ip": "10.0.0.5",
+      "protocol": "LLMNR",
+      "kind": "Query",
+      "name": "wpad",
+      "wpad": true,
+      "query_types": [
+        "A",
+        "AAAA"
+      ],
+      "count": 40,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "last_detail": "LLMNR A query for \"wpad\" (id 0x1a2b) 10.0.0.5 -> 224.0.0.252",
+      "source_mac": "00:11:22:33:44:55"
+    },
+    {
+      "source_ip": "10.0.0.5",
+      "protocol": "NetBIOS",
+      "kind": "Query",
+      "name": "wpad<00>",
+      "wpad": true,
+      "query_types": [
+        "NB"
+      ],
+      "count": 12,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "last_detail": "",
+      "source_mac": "00:11:22:33:44:55"
+    },
+    {
+      "source_ip": "10.0.0.5",
+      "protocol": "LLMNR",
+      "kind": "Query",
+      "name": "oldfileserver",
+      "wpad": false,
+      "query_types": [
+        "A"
+      ],
+      "count": 3,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:02:00Z",
+      "last_detail": "",
+      "source_mac": "00:11:22:33:44:55"
+    },
+    {
+      "source_ip": "10.0.0.5",
+      "protocol": "HTTP",
+      "kind": "Query",
+      "name": "wpad/wpad.dat",
+      "wpad": true,
+      "query_types": [
+        "GET"
+      ],
+      "count": 15,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "last_detail": "",
+      "source_mac": "00:11:22:33:44:55",
+      "answers": [
+        "10.0.0.66"
+      ]
+    },
+    {
+      "source_ip": "10.0.0.20",
+      "protocol": "mDNS",
+      "kind": "Query",
+      "name": "_ipp._tcp.local",
+      "wpad": false,
+      "query_types": [
+        "PTR"
+      ],
+      "count": 5,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:10:00Z",
+      "last_detail": "",
+      "source_mac": "a4:5e:60:11:22:33"
+    },
+    {
+      "source_ip": "10.0.0.20",
+      "protocol": "mDNS",
+      "kind": "Query",
+      "name": "printer-lobby.local",
+      "wpad": false,
+      "query_types": [
+        "A"
+      ],
+      "count": 9,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:12:00Z",
+      "last_detail": "",
+      "source_mac": "a4:5e:60:11:22:33"
+    },
+    {
+      "source_ip": "10.0.0.31",
+      "protocol": "NetBIOS",
+      "kind": "Query",
+      "name": "workstation31<00>",
+      "wpad": false,
+      "query_types": [
+        "Registration"
+      ],
+      "count": 2,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:01:00Z",
+      "last_detail": "",
+      "source_mac": "dc:a6:32:aa:bb:cc"
+    },
+    {
+      "source_ip": "10.0.0.31",
+      "protocol": "NetBIOS",
+      "kind": "Query",
+      "name": "fileserv<20>",
+      "wpad": false,
+      "query_types": [
+        "NB"
+      ],
+      "count": 7,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:25:00Z",
+      "last_detail": "",
+      "source_mac": "dc:a6:32:aa:bb:cc"
+    },
+    {
+      "source_ip": "10.0.0.66",
+      "protocol": "NetBIOS",
+      "kind": "Response",
+      "name": "wpad<00>",
+      "wpad": true,
+      "query_types": [
+        "NB"
+      ],
+      "count": 15,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "last_detail": "",
+      "source_mac": "08:00:27:de:ad:00",
+      "answers": [
+        "10.0.0.66"
+      ]
+    },
+    {
+      "source_ip": "10.0.0.66",
+      "protocol": "LLMNR",
+      "kind": "Response",
+      "name": "oldfileserver",
+      "wpad": false,
+      "query_types": [
+        "A"
+      ],
+      "count": 3,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:02:00Z",
+      "last_detail": "",
+      "source_mac": "08:00:27:de:ad:00",
+      "answers": [
+        "10.0.0.66"
+      ]
+    },
+    {
+      "source_ip": "fe80::1c2b:3d4e:5f60:7182",
+      "protocol": "DHCPv6",
+      "kind": "Query",
+      "name": "desktop-7.corp.local",
+      "wpad": false,
+      "query_types": [
+        "Solicit"
+      ],
+      "count": 4,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:20:00Z",
+      "last_detail": ""
+    },
+    {
+      "source_ip": "fe80::1c2b:3d4e:5f60:7182",
+      "protocol": "LLMNR",
+      "kind": "Query",
+      "name": "wpad",
+      "wpad": true,
+      "query_types": [
+        "AAAA"
+      ],
+      "count": 6,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:21:00Z",
+      "last_detail": ""
+    },
+    {
+      "source_ip": "fe80::bad",
+      "protocol": "DHCPv6",
+      "kind": "Response",
+      "name": "(advertise)",
+      "wpad": false,
+      "query_types": [
+        "Advertise"
+      ],
+      "count": 4,
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:20:00Z",
+      "last_detail": "",
+      "source_mac": "08:00:27:de:ad:00",
+      "answers": [
+        "fd00::1234"
+      ]
+    }
+  ],
+  "alerts": [
+    {
+      "id": "llmnr-nbns-responder|10.0.0.66",
+      "rule": "llmnr-nbns-responder",
+      "severity": "high",
+      "source_ip": "10.0.0.66",
+      "protocol": "NetBIOS",
+      "title": "Answered a WPAD name lookup",
+      "evidence": "10.0.0.66 answered NetBIOS for \"wpad<00>\" with 10.0.0.66. Legitimate WPAD is served by DNS, never by LLMNR/NetBIOS; this is the Responder/Inveigh WPAD attack.",
+      "names": [
+        "oldfileserver",
+        "wpad<00>"
+      ],
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "count": 18
+    },
+    {
+      "id": "wpad-http-server|10.0.0.66",
+      "rule": "wpad-http-server",
+      "severity": "high",
+      "source_ip": "10.0.0.66",
+      "protocol": "HTTP",
+      "title": "Serves wpad.dat and answers name lookups",
+      "evidence": "10.0.0.66 received 15 wpad.dat request(s) and also answered LLMNR/NetBIOS/mDNS lookups. This is the Responder WPAD credential-capture flow.",
+      "first_seen": "2026-11-08T10:00:00Z",
+      "last_seen": "2026-11-08T10:29:00Z",
+      "count": 15
+    },
+    {
+      "id": "dhcpv6-server|fe80::bad",
+      "rule": "dhcpv6-server",
+      "severity": "high",
+      "source_ip": "fe80::bad",
+      "protocol": "DHCPv6",
+      "title": "Acting as a DHCPv6 server",
+      "evidence": "fe80::bad sent DHCPv6 Advertise to fe80::1c2b:3d4e:5f60:7182 (dns=fe80::bad). On IPv4-only networks no host should answer DHCPv6; mitm6 does exactly this.",
+      "first_seen": "2026-11-08T10:20:00Z",
+      "last_seen": "2026-11-08T10:20:00Z",
+      "count": 4
+    }
+  ]
+}

@@ -19,7 +19,9 @@ needed), three tabs and a status bar. Nothing it does transmits a packet.
 | ⓘ (info, far right) | **About** | Version, capture backend, and the passive-only statement |
 
 You can also open a run file by starting the program with it as an argument:
-`heimdall-listener run.json` (no privileges needed for viewing).
+`heimdall-listener run.json` (no privileges needed for viewing). The screenshots on this page are
+`heimdall-listener docs/sample-run.json`, a synthetic run you can open yourself; they are rendered by
+`HEIMDALL_SNAPSHOT_DIR=out HEIMDALL_SNAPSHOT_RUN=docs/sample-run.json go test ./cmd/heimdall-listener/internal/ui -run TestRenderViews`.
 
 ## Controls row
 
